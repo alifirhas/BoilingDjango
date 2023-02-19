@@ -7,6 +7,8 @@ from api.views import (
 )
 
 router = routers.DefaultRouter()
+# New line
+# Register new view bellow
 router.register(r'users', UserViewSet.UserViewSet, basename='users')
 router.register(r'groups', GroupViewSet.GroupViewSet, basename='groups')
 router.register(r'posts', PostViewSet.PostViewSet, basename='posts')
