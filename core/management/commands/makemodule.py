@@ -11,7 +11,7 @@ class Command(BaseCommand):
     #     # parser.add_argument('module_name', type=str)
 
     def handle(self, *args, **kwargs):
-        app_name = input("App directory: ")
+        app_name = input("App name: ")
         model_name = input("Model name: ")
 
         if self.is_app_exist(app_name) != True:
@@ -26,9 +26,10 @@ class Command(BaseCommand):
         app_dir = os.path.join(settings.BASE_DIR, app_name)
         model_name = model_name.capitalize()
 
-        # self.write_model(app_dir, model_name)
-        # self.write_serializer(app_dir, app_name, model_name)
-        # self.write_view(app_dir, app_name, model_name)
+        self.write_model(app_dir, model_name)
+        self.update_init_model(app_dir, model_name)
+        self.write_serializer(app_dir, app_name, model_name)
+        self.write_view(app_dir, app_name, model_name)
         self.update_app_urls(app_dir, app_name, model_name)
 
     # Writing and updating file
@@ -58,6 +59,19 @@ class {model_name}(models.Model):
             self.stdout.write(
                 "There's something wrong while making model %s" % model_name)
             return False
+
+    def update_init_model(self, app_dir, model_name):
+        try:
+            model_init_file = open(f"{app_dir}/models/__init__.py", 'a')
+            model_init_file.write(f"from .{model_name} import {model_name}")
+            
+            
+            self.stdout.write("Success updating %s urls" % app_dir)
+        except:
+            self.stdout.write(
+                "There's something wrong while making model %s" % model_name)
+            return False
+            
 
     def write_serializer(self, app_dir, app_name, model_name):
         try:
@@ -91,7 +105,7 @@ from {app_name}.serializers.{model_name}Serializer import {model_name}Serializer
 
 class {model_name}ViewSet(viewsets.ModelViewSet):
     """
-    {app_name.upper} endpoint that allows {model_name} to be viewed or edited.
+    {app_name.upper()} endpoint that allows {model_name} to be viewed or edited.
     """
     queryset = {model_name}.objects.all().order_by('-created_at')
     serializer_class = {model_name}Serializer
@@ -109,8 +123,13 @@ class {model_name}ViewSet(viewsets.ModelViewSet):
             with open(f"{app_dir}/urls.py", 'r+') as urls_file:
                 lines = urls_file.readlines()
                 
-                new_route_line_index = lines.index("# Register new view bellow\n")
-                lines.insert(new_route_line_index, f'router.register(r\'{model_name}s\', UserViewSet.UserViewSet, basename=\'{model_name}s\')\n')
+                # Import viewsets to route
+                import_new_route_line = lines.index("# Register new viewSet above\n")
+                lines.insert(import_new_route_line, f'from {app_name}.views import {model_name}ViewSet\n')
+
+                # Register viewsets to route
+                register_new_route_line = lines.index("# Register new view above\n")
+                lines.insert(register_new_route_line, f'router.register(r\'{model_name.lower()}s\', UserViewSet.UserViewSet, basename=\'{model_name}s\')\n')
                 
                 urls_file.seek(0)
                 
