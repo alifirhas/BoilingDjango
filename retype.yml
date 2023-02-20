@@ -1,0 +1,12 @@
+input: src
+output: docs
+url: https://meal-planner-on-steroid.github.io/MPS-Documentation/
+branding:
+  title: BoilingDjango Documentation
+  label: Docs
+# links:
+# - text: Play Store
+#   link: https://play.google.com/store/apps/details?id=io.github.alifirhas.mps
+#   icon: apps
+footer:
+  copyright: "&copy; Copyright {{ 2023 }}. All rights reserved."
