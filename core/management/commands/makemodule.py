@@ -63,7 +63,7 @@ class {model_name}(models.Model):
     def update_init_model(self, app_dir, model_name):
         try:
             model_init_file = open(f"{app_dir}/models/__init__.py", 'a')
-            model_init_file.write(f"from .{model_name} import {model_name}\n")
+            model_init_file.write(f"\nfrom .{model_name} import {model_name}\n")
 
             self.stdout.write("Success updating %s model" % app_dir)
         except:
@@ -120,7 +120,7 @@ class {model_name}ViewSet(viewsets.ModelViewSet):
     def update_init_view(self, app_dir, app_name, model_name):
         try:
             view_init_file = open(f"{app_dir}/views/__init__.py", 'a')
-            view_init_file.write(f"from .{model_name} import {model_name}ViewSet\n")
+            view_init_file.write(f"from .{model_name}ViewSet import {model_name}ViewSet\n")
 
             self.stdout.write("Success updating %s views" % app_dir)
 
