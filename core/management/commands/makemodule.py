@@ -30,7 +30,7 @@ class Command(BaseCommand):
         self.update_init_model(app_dir, model_name)
         self.write_serializer(app_dir, app_name, model_name)
         self.write_view(app_dir, app_name, model_name)
-        self.update_app_urls(app_dir, app_name, model_name)
+        self.update_init_view(app_dir, app_name, model_name)
 
     # Writing and updating file
 
@@ -63,15 +63,13 @@ class {model_name}(models.Model):
     def update_init_model(self, app_dir, model_name):
         try:
             model_init_file = open(f"{app_dir}/models/__init__.py", 'a')
-            model_init_file.write(f"from .{model_name} import {model_name}")
-            
-            
-            self.stdout.write("Success updating %s urls" % app_dir)
+            model_init_file.write(f"from .{model_name} import {model_name}\n")
+
+            self.stdout.write("Success updating %s model" % app_dir)
         except:
             self.stdout.write(
                 "There's something wrong while making model %s" % model_name)
             return False
-            
 
     def write_serializer(self, app_dir, app_name, model_name):
         try:
@@ -111,6 +109,7 @@ class {model_name}ViewSet(viewsets.ModelViewSet):
     serializer_class = {model_name}Serializer
 ''')
             view_file.close()
+            
             self.stdout.write("Success making view %s" % model_name)
 
         except:
@@ -118,30 +117,46 @@ class {model_name}ViewSet(viewsets.ModelViewSet):
                 "There's something wrong while making serializer %s" % model_name)
             return False
 
-    def update_app_urls(self, app_dir, app_name, model_name):
+    def update_init_view(self, app_dir, app_name, model_name):
         try:
-            with open(f"{app_dir}/urls.py", 'r+') as urls_file:
-                lines = urls_file.readlines()
-                
-                # Import viewsets to route
-                import_new_route_line = lines.index("# Register new viewSet above\n")
-                lines.insert(import_new_route_line, f'from {app_name}.views import {model_name}ViewSet\n')
+            view_init_file = open(f"{app_dir}/views/__init__.py", 'a')
+            view_init_file.write(f"from .{model_name} import {model_name}ViewSet\n")
 
-                # Register viewsets to route
-                register_new_route_line = lines.index("# Register new view above\n")
-                lines.insert(register_new_route_line, f'router.register(r\'{model_name.lower()}s\', {model_name}ViewSet.{model_name}ViewSet, basename=\'{model_name}s\')\n')
-                
-                urls_file.seek(0)
-                
-                urls_file.writelines(lines)
-                
-                urls_file.close()
-            
-            self.stdout.write("Success updating %s urls" % app_dir)
+            self.stdout.write("Success updating %s views" % app_dir)
+
         except:
             self.stdout.write(
-                    "There's something wrong while updating urls %s" % model_name)
+                "There's something wrong while updating urls %s" % model_name)
             return False
+
+    # def update_app_urls(self, app_dir, app_name, model_name):
+    #     try:
+    #         with open(f"{app_dir}/urls.py", 'r+') as urls_file:
+    #             lines = urls_file.readlines()
+
+    #             # Import viewsets to route
+    #             import_new_route_line = lines.index(
+    #                 "# Register new viewSet above\n")
+    #             lines.insert(
+    #                 import_new_route_line, f'from {app_name}.views import {model_name}ViewSet\n')
+
+    #             # Register viewsets to route
+    #             register_new_route_line = lines.index(
+    #                 "# Register new view above\n")
+    #             lines.insert(register_new_route_line,
+    #                          f'router.register(r\'{model_name.lower()}s\', {model_name}ViewSet.{model_name}ViewSet, basename=\'{model_name}s\')\n')
+
+    #             urls_file.seek(0)
+
+    #             urls_file.writelines(lines)
+
+    #             urls_file.close()
+
+    #         self.stdout.write("Success updating %s urls" % app_dir)
+    #     except:
+    #         self.stdout.write(
+    #             "There's something wrong while updating urls %s" % model_name)
+    #         return False
 
     # Utils
     def is_app_exist(self, app_dir):
