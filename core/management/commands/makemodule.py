@@ -129,7 +129,7 @@ class {model_name}ViewSet(viewsets.ModelViewSet):
 
                 # Register viewsets to route
                 register_new_route_line = lines.index("# Register new view above\n")
-                lines.insert(register_new_route_line, f'router.register(r\'{model_name.lower()}s\', UserViewSet.UserViewSet, basename=\'{model_name}s\')\n')
+                lines.insert(register_new_route_line, f'router.register(r\'{model_name.lower()}s\', {model_name}ViewSet.{model_name}ViewSet, basename=\'{model_name}s\')\n')
                 
                 urls_file.seek(0)
                 

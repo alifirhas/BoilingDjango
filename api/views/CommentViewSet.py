@@ -7,5 +7,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows Comment to be viewed or edited.
     """
+    view_name = 'comment'
     queryset = Comment.objects.all().order_by('-created_at')
     serializer_class = CommentSerializer
