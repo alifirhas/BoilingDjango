@@ -9,7 +9,7 @@
   <p align="center">
     Boilerplate thingy for Django
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://alifirhas.github.io/BoilingDjango/"><strong>Explore the docs »</strong></a>
     <br />
     <a href="https://github.com/alifirhas/BoilingDjango/issues">Report Bug</a>
     ·
